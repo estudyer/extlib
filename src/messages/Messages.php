@@ -12,7 +12,8 @@ class Messages
         Codes::QINIU_NOTFOUND           => '',
         Codes::QINIU_TOKEN_INVALID      => '',
         Codes::QINIU_FILESTRING_INVALID => '',
-        Codes::QINIU_UPLOADFAILED       => '上传失败：error'
+        Codes::QINIU_UPLOADFAILED       => '上传失败：error',
+        Codes::EMAIL_SENDFAIL           => '发送失败：error'
     ];
 
     /**

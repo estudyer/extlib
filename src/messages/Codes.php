@@ -12,4 +12,5 @@ class Codes
     const QINIU_TOKEN_INVALID       = 2002;
     const QINIU_FILESTRING_INVALID  = 2003;
     const QINIU_UPLOADFAILED        = 2004;
+    const EMAIL_SENDFAIL            = 3002;
 }
