@@ -1,143 +1,217 @@
 <?php
+
 namespace libraries\http;
 
 /**
  * Class Request
  * @package http
  */
-class Request {
-	/**
-	 * @var int
-	 */
-	protected $timeout = 30;
+class Request
+{
+    /**
+     * @var int
+     */
+    protected $timeout = 30;
 
-	/**
-	 * @var array
-	 */
-	protected $redirect = [
-		CURLOPT_REFERER => true,
-		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_MAXREDIRS => 5,
-	];
+    /**
+     * @var bool
+     */
+    protected $log = true;
 
-	/**
-	 * @param $url
-	 * @param array $data
-	 * @param array $header
-	 * @param null $response
-	 * @return Response|mixed
-	 */
-	public function get($url, $data = [], $header = [], $response = null) {
-		$options = [
-			CURLOPT_SSL_VERIFYPEER => 0,
-			CURLOPT_SSL_VERIFYHOST => 0,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_TIMEOUT => $this->timeout,
-			CURLOPT_HTTPHEADER => $header,
-			CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
-			//CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
-		];
+    /**
+     * @var array
+     */
+    protected $redirect = [
+        CURLOPT_REFERER => true,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_MAXREDIRS => 5,
+    ];
 
-		$options = $this->redirect + $options;
+    /**
+     * @param $url
+     * @param array $data
+     * @param array $header
+     * @param null $response
+     * @return Response|mixed
+     */
+    public function get($url, $data = [], $header = [], $response = null)
+    {
+        $options = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
+            //CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
+        ];
 
-		if (!empty($data)) {
-			if (!is_array($data)) {
-				$data = http_build_query($url);
-			}
+        $options = $this->redirect + $options;
 
-			if (strpos($url, '?') !== false) {
-				$url .= '&' . $data;
-			} else {
-				$url .= '?' . $data;
-			}
-		}
+        if (!empty($data)) {
+            if (!is_array($data)) {
+                $data = http_build_query($url);
+            }
 
-		return $this->exec($url, $options, $response);
-	}
+            if (strpos($url, '?') !== false) {
+                $url .= '&' . $data;
+            } else {
+                $url .= '?' . $data;
+            }
+        }
 
-	/**
-	 * @param $url
-	 * @param $data
-	 * @param array $header
-	 * @param null $response
-	 * @return Response|mixed
-	 */
-	public function post($url, $data, $header = [], $response = null) {
-		$options = [
-			CURLOPT_SSL_VERIFYPEER => 0,
-			CURLOPT_SSL_VERIFYHOST => 0,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_TIMEOUT => $this->timeout,
-			CURLOPT_HTTPHEADER => $header,
-			CURLOPT_CUSTOMREQUEST => 'POST',
-			CURLOPT_POSTFIELDS => $data,
-			CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
-			//CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
-		];
+        return $this->exec($url, $options, $response);
+    }
 
-		return $this->exec($url, $options, $response);
-	}
+    /**
+     * @param $url
+     * @param $data
+     * @param array $header
+     * @param null $response
+     * @return Response|mixed
+     */
+    public function post($url, $data, $header = [], $response = null)
+    {
+        $options = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
+            //CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
+        ];
 
-	public function delete($url, $data, $header = [], $response = null) {
-		$options = [
-			CURLOPT_SSL_VERIFYPEER => 0,
-			CURLOPT_SSL_VERIFYHOST => 0,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_TIMEOUT => $this->timeout,
-			CURLOPT_HTTPHEADER => $header,
-			CURLOPT_CUSTOMREQUEST => 'DELETE',
-			CURLOPT_POSTFIELDS => $data,
-			CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
-			//CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
-		];
+        return $this->exec($url, $options, $response);
+    }
 
-		return $this->exec($url, $options, $response);
-	}
+    public function delete($url, $data, $header = [], $response = null)
+    {
+        $options = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_CUSTOMREQUEST => 'DELETE',
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
+            //CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
+        ];
 
-	public function put($url, $data, $header = [], $response = null) {
-		$options = [
-			CURLOPT_SSL_VERIFYPEER => 0,
-			CURLOPT_SSL_VERIFYHOST => 0,
-			CURLOPT_RETURNTRANSFER => 1,
-			CURLOPT_TIMEOUT => $this->timeout,
-			CURLOPT_HTTPHEADER => $header,
-			CURLOPT_CUSTOMREQUEST => 'PUT',
-			CURLOPT_POSTFIELDS => $data,
-			CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
-			//CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
-		];
+        return $this->exec($url, $options, $response);
+    }
 
-		return $this->exec($url, $options, $response);
-	}
+    public function put($url, $data, $header = [], $response = null)
+    {
+        $options = [
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_RETURNTRANSFER => 1,
+            CURLOPT_TIMEOUT => $this->timeout,
+            CURLOPT_HTTPHEADER => $header,
+            CURLOPT_CUSTOMREQUEST => 'PUT',
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
+            //CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
+        ];
 
-	public function headerResponse($curl, $header) {
-		//return 0; // 断开连接
-		return strlen($header);
-	}
+        return $this->exec($url, $options, $response);
+    }
 
-	public function responseInfo($curl, $info) {}
+    public function headerResponse($curl, $header)
+    {
+        //return 0; // 断开连接
+        return strlen($header);
+    }
 
-	/**
-	 * @param $url
-	 * @param $options
-	 * @param null $responseHandle
-	 * @return Response|mixed
-	 */
-	protected function exec($url, $options, $responseHandle = null) {
-		$curl = curl_init($url);
+    public function responseInfo($curl, $info)
+    {
+    }
 
-		curl_setopt_array($curl, $options);
+    /**
+     * @param $url
+     * @param $options
+     * @param null $responseHandle
+     * @return Response|mixed
+     */
+    protected function exec($url, $options, $responseHandle = null)
+    {
+        $curl = curl_init($url);
 
-		$response = curl_exec($curl);
+        curl_setopt_array($curl, $options);
 
-		if (null === $responseHandle) {
-			$response = new Response($response, $curl);
-		} else {
-			$response = new $responseHandle($response, $curl);
-		}
+        $response = curl_exec($curl);
 
-		curl_close($curl);
+        if($this->log === true) {
+            $this->log($curl, $options, $response);
+        }
 
-		return $response;
-	}
+        if (method_exists($this, 'response')) {
+            $data = [
+                'info' => curl_getinfo($curl),
+                'options' => $options,
+                'error' => [
+                    'errno' => curl_errno($curl),
+                    'error' => curl_error($curl)
+                ]
+            ];
+            curl_close($curl);
+            return $this->response($response, $data);
+        } else if (null === $responseHandle) {
+            $response = new Response($response, $curl);
+        } else {
+            $response = new $responseHandle($response, $curl);
+        }
+        $response->options($options);
+
+        curl_close($curl);
+
+        return $response;
+    }
+
+    /**
+     * @param $curl
+     * @param $options
+     * @param $result
+     */
+    protected function log($curl, $options, $result) {
+        $path = __DIR__ . '/../logs/' . date('Y-m-d') . '/request/';
+        if(!is_dir($path)) mkdir($path, 0777, true);
+
+        if(!file_exists($path . 'select.file')) {
+            file_put_contents($path . 'select.file', 'request_' . mtime());
+        }
+
+        $file = $path . file_get_contents($path . 'select.file') . '.log';
+        if(is_file($file)) {
+            if(filesize($file) > 5 * 1024 * 1024) {
+                file_put_contents($path . 'select.file', 'request_' . mtime());
+                $file = file_get_contents($path . 'select.file');
+            }
+        }
+
+        $info = curl_getinfo($curl);
+        $log = [
+            '==================================[[START]]===============================',
+            '时间：' . date('Y-m-d H:i:s') . '[' . mtime() . ']',
+            '地址：' . $info['url'],
+            'code：' . $info['http_code'],
+            'params：' . json_encode($options[CURLOPT_POSTFIELDS]),
+            'header：' . json_encode($options[CURLOPT_HTTPHEADER])
+        ];
+        if(strlen($result) <= 255) {
+            $log[] = 'Result：' . $result;
+        }
+
+        if($info['http_code'] !== 200) {
+            $log[] = 'Errno：' . curl_errno($curl) . ' Error：' . curl_error($curl);
+        }
+        $log[] = '==================================[[E N D]]===============================';
+
+        $content = join(PHP_EOL, $log);
+        error_log($content . PHP_EOL . PHP_EOL, 3, $file);
+    }
 }

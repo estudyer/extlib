@@ -1,9 +1,7 @@
 <?php
 namespace libraries;
 
-use libraries\exception\ConfigException;
-use libraries\exception\EmailException;
-use libraries\exception\Exceptions;
+use libraries\exception\{ConfigException, EmailException, Exceptions};
 use libraries\library\email\Options;
 use libraries\messages\Codes;
 use PHPMailer\PHPMailer\{Exception, PHPMailer};
