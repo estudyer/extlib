@@ -1,19 +1,14 @@
 <?php
 namespace libraries\http;
 
-use libraries\library\saiduo\Options;
+use libraries\library\huiyu\Options;
 
 /**
- * Class SaiduoRequest
+ * Class HuiyuRequest
  * @package libraries\http
  */
-class SaiduoRequest extends Request
+class HuiyuRequest extends Request
 {
-    /**
-     * @param $response
-     * @param $data
-     * @return mixed
-     */
     public function response($response, $data) {
         if($data['info']['http_code'] !== 200) {
             $this->errorLog($response, $data);
@@ -23,27 +18,23 @@ class SaiduoRequest extends Request
         return $response;
     }
 
-    public function voiceResponse($response, $data) {
-        return $response;
-    }
-
     /**
      * @param $response
      * @param $data
      */
     public function errorLog($response, $data) {
-        $path = !empty(Options::$LOGPATH) ? Options::$LOGPATH : __DIR__ . '/../logs/' . date('Y-m-d') . '/saiduo/';
+        $path = !empty(Options::$LOGPATH) ? Options::$LOGPATH : __DIR__ . '/../logs/' . date('Y-m-d') . '/huiyu/';
         if(!is_dir($path)) mkdir($path, 0777, true);
 
-        if(!file_exists($path . 'saiduo.file')) {
-            file_put_contents($path . 'saiduo.file', 'saiduo_' . mtime());
+        if(!file_exists($path . 'huiyu.file')) {
+            file_put_contents($path . 'huiyu.file', 'huiyu_' . mtime());
         }
 
-        $file = $path . file_get_contents($path . 'saiduo.file') . '.log';
+        $file = $path . file_get_contents($path . 'huiyu.file') . '.log';
         if(is_file($file)) {
             if(filesize($file) > 5 * 1024 * 1024) {
-                file_put_contents($path . 'saiduo.file', 'saiduo_' . mtime());
-                $file = file_get_contents($path . 'saiduo.file');
+                file_put_contents($path . 'huiyu.file', 'huiyu_' . mtime());
+                $file = file_get_contents($path . 'huiyu.file');
             }
         }
 

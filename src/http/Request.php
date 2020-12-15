@@ -1,5 +1,4 @@
 <?php
-
 namespace libraries\http;
 
 /**
@@ -37,13 +36,14 @@ class Request
     public function get($url, $data = [], $header = [], $response = null)
     {
         $options = [
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_SSL_VERIFYHOST => 0,
-            CURLOPT_RETURNTRANSFER => 1,
-            CURLOPT_TIMEOUT => $this->timeout,
-            CURLOPT_HTTPHEADER => $header,
-            CURLOPT_POSTFIELDS => $data,
-            CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
+            CURLOPT_CUSTOMREQUEST   => 'GET',
+            CURLOPT_SSL_VERIFYPEER  => 0,
+            CURLOPT_SSL_VERIFYHOST  => 0,
+            CURLOPT_RETURNTRANSFER  => 1,
+            CURLOPT_TIMEOUT         => $this->timeout,
+            CURLOPT_HTTPHEADER      => $header,
+            CURLOPT_POSTFIELDS      => $data,
+            CURLOPT_HEADERFUNCTION  => [$this, 'headerResponse'],
             //CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
         ];
 

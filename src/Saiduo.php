@@ -68,15 +68,36 @@ class Saiduo
         $data['SIPLine'] = Options::$LINE;
         $data['RobotMethod'] = Options::$METHOD;
         $request = new SaiduoRequest();
-        return json_decode($request->post(Options::CREATE, $data, ['Authorization:Token ' . $token]), true);
+        return json_decode($request->post(Options::CREATE, json_encode($data), ['Authorization:Token ' . $token]), true);
     }
 
-    public function stop($data) {
-
+    /**
+     * @param $data
+     * @return mixed
+     */
+    public function stop($data, $token) {
+        $request = new SaiduoRequest();
+        return json_decode($request->post(Options::STOP, json_encode($data), ['Authorization:Token ' . $token]), true);
     }
 
-    public function tasks($data) {
+    /**
+     * @param $data
+     * @param $token
+     * @return mixed
+     */
+    public function stopPhone($data, $token) {
+        $request = new SaiduoRequest();
+        return json_decode($request->post(Options::STOPPHONE, json_encode($data), ['Authorization:Token ' . $token]), true);
+    }
 
+    /**
+     * @param $data
+     * @param $token
+     * @return mixed
+     */
+    public function tasks($data, $token) {
+        $request = new SaiduoRequest();
+        return json_decode($request->get(Options::LISTTASK, $data, ['Authorization:Token ' . $token]), true);
     }
 
     /**
@@ -91,10 +112,21 @@ class Saiduo
         ], ['Authorization:Token ' . $token]), true);
     }
 
+    /**
+     * @param $data
+     * @param $token
+     * @return mixed
+     */
     public function voiceZip($data, $token) {
-
+        $request = new SaiduoRequest();
+        return json_decode($request->get(Options::VOICEZIP, $data, ['Authorization:Token ' . $token]), true);
     }
 
+    /**
+     * @param $data
+     * @param $token
+     * @return mixed
+     */
     public function voice($data, $token) {
         $request = new SaiduoRequest();
         return json_decode($request->get(Options::VOICE, $data, ['Authorization:Token ' . $token], [$request, 'voiceResponse']), true);
