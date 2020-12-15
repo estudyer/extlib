@@ -13,4 +13,7 @@ class Codes
     const QINIU_FILESTRING_INVALID  = 2003;
     const QINIU_UPLOADFAILED        = 2004;
     const EMAIL_SENDFAIL            = 3002;
+    const EXCEL_FILE_NOTEXISTS      = 4001;
+    const EXCEL_READFAIL            = 4002;
+    const EXCEL_SAVEFAIL            = 4003;
 }

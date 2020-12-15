@@ -13,7 +13,10 @@ class Messages
         Codes::QINIU_TOKEN_INVALID      => '',
         Codes::QINIU_FILESTRING_INVALID => '',
         Codes::QINIU_UPLOADFAILED       => '上传失败：error',
-        Codes::EMAIL_SENDFAIL           => '发送失败：error'
+        Codes::EMAIL_SENDFAIL           => '发送失败：error',
+        Codes::EXCEL_FILE_NOTEXISTS     => '文件不存在',
+        Codes::EXCEL_READFAIL           => 'excel读取失败：error',
+        Codes::EXCEL_SAVEFAIL           => '保存失败：error'
     ];
 
     /**

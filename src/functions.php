@@ -23,3 +23,32 @@ if(!function_exists('lmsg')) {
         return Messages::get($code, $replaces);
     }
 }
+
+if(!function_exists('array_get')) {
+    /**
+     * @param $array
+     * @param $key
+     * @param null $default
+     * @param null $deepKey
+     * @return mixed|null
+     */
+    function array_get($array, $key, $default = null, $deepKey = null)
+    {
+        if (!is_array($array)) return $default;
+
+        $keys = explode('.', $key);
+        $length = count($keys);
+        foreach ($keys as $index => $key) {
+            if (!is_array($array) || !array_key_exists($key, $array)) return $default;
+
+            $array = $array[$key];
+            if ($length - 1 == $index) {
+                if (null === $deepKey) return $array;
+
+                return array_get($array, $deepKey, $default);
+            }
+        }
+
+        return $default;
+    }
+}
