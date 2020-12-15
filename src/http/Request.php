@@ -42,6 +42,7 @@ class Request
             CURLOPT_RETURNTRANSFER => 1,
             CURLOPT_TIMEOUT => $this->timeout,
             CURLOPT_HTTPHEADER => $header,
+            CURLOPT_POSTFIELDS => $data,
             CURLOPT_HEADERFUNCTION => [$this, 'headerResponse'],
             //CURLOPT_WRITEFUNCTION   => [$this, 'responseInfo']
         ];
@@ -49,8 +50,8 @@ class Request
         $options = $this->redirect + $options;
 
         if (!empty($data)) {
-            if (!is_array($data)) {
-                $data = http_build_query($url);
+            if (is_array($data)) {
+                $data = http_build_query($data);
             }
 
             if (strpos($url, '?') !== false) {
@@ -149,21 +150,35 @@ class Request
             $this->log($curl, $options, $response);
         }
 
-        if (method_exists($this, 'response')) {
-            $data = [
-                'info' => curl_getinfo($curl),
-                'options' => $options,
-                'error' => [
-                    'errno' => curl_errno($curl),
-                    'error' => curl_error($curl)
-                ]
-            ];
+        $data = [
+            'info' => curl_getinfo($curl),
+            'options' => $options,
+            'error' => [
+                'errno' => curl_errno($curl),
+                'error' => curl_error($curl)
+            ]
+        ];
+
+        if (null !== $responseHandle) {
+            if(is_array($responseHandle)) {
+                curl_close($curl);
+                return call_user_func_array($responseHandle, [$response, $data]);
+            } else if(!$responseHandle instanceof Response) {
+                curl_close($curl);
+                return new $responseHandle($response, $data);
+            } else if(is_callable($responseHandle)) {
+                curl_close($curl);
+                return $responseHandle($response, $data);
+            } else if(!class_exists($responseHandle)) {
+                curl_close($curl);
+                return ['response' => $response, 'data' => $data];
+            }
+            $response = new $responseHandle($response, $curl);
+        } else if (method_exists($this, 'response')) {
             curl_close($curl);
             return $this->response($response, $data);
         } else if (null === $responseHandle) {
             $response = new Response($response, $curl);
-        } else {
-            $response = new $responseHandle($response, $curl);
         }
         $response->options($options);
 
@@ -181,15 +196,15 @@ class Request
         $path = __DIR__ . '/../logs/' . date('Y-m-d') . '/request/';
         if(!is_dir($path)) mkdir($path, 0777, true);
 
-        if(!file_exists($path . 'select.file')) {
-            file_put_contents($path . 'select.file', 'request_' . mtime());
+        if(!file_exists($path . 'request.file')) {
+            file_put_contents($path . 'request.file', 'request_' . mtime());
         }
 
-        $file = $path . file_get_contents($path . 'select.file') . '.log';
+        $file = $path . file_get_contents($path . 'request.file') . '.log';
         if(is_file($file)) {
             if(filesize($file) > 5 * 1024 * 1024) {
-                file_put_contents($path . 'select.file', 'request_' . mtime());
-                $file = file_get_contents($path . 'select.file');
+                file_put_contents($path . 'request.file', 'request_' . mtime());
+                $file = file_get_contents($path . 'request.file');
             }
         }
 

@@ -45,15 +45,15 @@ class NiuxinRequest extends Request
         $path = !empty(Options::$LOGPATH) ? Options::$LOGPATH : __DIR__ . '/../logs/' . date('Y-m-d') . '/niuxin/';
         if(!is_dir($path)) mkdir($path, 0777, true);
 
-        if(!file_exists($path . 'select.file')) {
-            file_put_contents($path . 'select.file', 'niuxin_' . mtime());
+        if(!file_exists($path . 'niuxin.file')) {
+            file_put_contents($path . 'niuxin.file', 'niuxin_' . mtime());
         }
 
-        $file = $path . file_get_contents($path . 'select.file') . '.log';
+        $file = $path . file_get_contents($path . 'niuxin.file') . '.log';
         if(is_file($file)) {
             if(filesize($file) > 5 * 1024 * 1024) {
-                file_put_contents($path . 'select.file', 'niuxin_' . mtime());
-                $file = file_get_contents($path . 'select.file');
+                file_put_contents($path . 'niuxin.file', 'niuxin_' . mtime());
+                $file = file_get_contents($path . 'niuxin.file');
             }
         }
 

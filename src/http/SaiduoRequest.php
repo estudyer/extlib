@@ -1,13 +1,13 @@
 <?php
 namespace libraries\http;
 
-use libraries\library\quiros\Options;
+use libraries\library\saiduo\Options;
 
 /**
- * Class QuirosRequest
+ * Class SaiduoRequest
  * @package libraries\http
  */
-class QuirosRequest extends Request
+class SaiduoRequest extends Request
 {
     /**
      * @param $response
@@ -23,23 +23,27 @@ class QuirosRequest extends Request
         return $response;
     }
 
+    public function voiceResponse($response, $data) {
+        dd(11111);
+    }
+
     /**
      * @param $response
      * @param $data
      */
     public function errorLog($response, $data) {
-        $path = !empty(Options::$LOGPATH) ? Options::$LOGPATH : __DIR__ . '/../logs/' . date('Y-m-d') . '/quiros/';
+        $path = !empty(Options::$LOGPATH) ? Options::$LOGPATH : __DIR__ . '/../logs/' . date('Y-m-d') . '/saiduo/';
         if(!is_dir($path)) mkdir($path, 0777, true);
 
-        if(!file_exists($path . 'quiros.file')) {
-            file_put_contents($path . 'quiros.file', 'quiros_' . mtime());
+        if(!file_exists($path . 'saiduo.file')) {
+            file_put_contents($path . 'saiduo.file', 'saiduo_' . mtime());
         }
 
-        $file = $path . file_get_contents($path . 'quiros.file') . '.log';
+        $file = $path . file_get_contents($path . 'saiduo.file') . '.log';
         if(is_file($file)) {
             if(filesize($file) > 5 * 1024 * 1024) {
-                file_put_contents($path . 'quiros.file', 'quiros_' . mtime());
-                $file = file_get_contents($path . 'quiros.file');
+                file_put_contents($path . 'saiduo.file', 'saiduo_' . mtime());
+                $file = file_get_contents($path . 'saiduo.file');
             }
         }
 
