@@ -1,6 +1,7 @@
 {
     "name": "small/extlib",
     "type": "library",
+    "license": "MIT",
     "require": {
     	"qiniu/php-sdk": "7.3.*",
     	"php": ">=7.0",
