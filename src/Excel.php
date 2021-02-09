@@ -12,6 +12,10 @@ use PhpOffice\PhpSpreadsheet\{IOFactory, Reader\Exception, Spreadsheet};
 class Excel
 {
     protected $savePath = __DIR__ . '/files/excel/';
+    
+    const STORE_SAVE = 1;
+    const STORE_DOWNLOAD = 2;
+    const STORE_SAVE_DOWNLOAD = 3;
 
     public function __construct($configs = [])
     {
@@ -60,7 +64,7 @@ class Excel
      * @return string
      * @throws ExcelException
      */
-    public function write($data, $file, $extend = [], $storeLevel = 1) {
+    public function write($data, $file, $extend = [], $storeLevel = self::STORE_SAVE) {
         try{
             $excel = new Spreadsheet();
             $sheet = $excel->getActiveSheet();
